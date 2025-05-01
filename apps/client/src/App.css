@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@theme {
+  /*Light Mode*/
+  /* Copper (Accent Colour)*/
+
+  --color-copper-100: #ebc9ae;
+  --color-copper-200: #e9bc97;
+  --color-copper-300: #ddae89;
+  --color-copper-400: #d09c71;
+  --color-copper-500: #c2824a;
+  --color-copper-600: #b87333;
+  --color-copper-700: #aa6724;
+  --color-copper-800: #7c4300;
+  --color-copper-900: #443427;
+
+  /* Brass (Grey Colour)*/
+
+  --color-brass-100: #ded0a7;
+  --color-brass-200: #d7c798;
+  --color-brass-300: #d2bd80;
+  --color-brass-400: #cbb162;
+  --color-brass-500: #bf9b16;
+  --color-brass-600: #8e6d00;
+  --color-brass-700: #816300;
+  --color-brass-800: #5f4700;
+  --color-brass-900: #2c1e00;
+
+  /* Parchment (Background Color)*/
+
+  --color-parchment: #f4ecd8;
+
+  /* Miscellaneous colors*/
+
+  --color-verdigris: #4f6d7a;
+  --color-mistWhite: #f5f5f5;
+  --color-slateDark: #1f1f1f;
+  --color-steelBlue: #4682b4;
+  --color-ink: #0f0f0f;
+  --color-bloodRed: #8b0000;
+}
