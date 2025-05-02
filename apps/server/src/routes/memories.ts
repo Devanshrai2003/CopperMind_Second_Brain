@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import { auth } from "../middleware/auth";
+import { upload } from "../utils/cloudinary";
 
 const memoryRouter = Router();
 const prisma = new PrismaClient();
@@ -39,6 +40,25 @@ memoryRouter.post("/add-memory", auth, async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+memoryRouter.post(
+  "/add-image",
+  upload.single("image"),
+  (req: Request, res: Response) => {
+    try {
+      const file = req.file as Express.Multer.File & { path?: string };
+
+      if (!file || !file.path) {
+        res.status(400).json({ error: "No image uploaded" });
+        return;
+      }
+      res.status(200).json({ url: file.path });
+    } catch (error) {
+      console.error("Image upload error:", error);
+      res.status(500).json({ error: "Upload failed" });
+    }
+  }
+);
 
 memoryRouter.get("/get-memories", auth, async (req: Request, res: Response) => {
   const user = req.user;
