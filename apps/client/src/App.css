@@ -1,41 +1,124 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Martel:wght@200;300;400;600;700;800;900&family=Rosarivo:ital@0;1&display=swap");
 @import "tailwindcss";
 
 @theme {
-  /*Light Mode*/
-  /* Copper (Accent Colour)*/
+  --font-rosarivo: "Rosarivo", "sans-serif";
+  --font-cormorant: "Cormorant Garamond", "sans-serif";
+  --font-martel: "Martel", "sans-serif";
+}
 
-  --color-copper-100: #ebc9ae;
-  --color-copper-200: #e9bc97;
-  --color-copper-300: #ddae89;
-  --color-copper-400: #d09c71;
-  --color-copper-500: #c2824a;
-  --color-copper-600: #b87333;
-  --color-copper-700: #aa6724;
-  --color-copper-800: #7c4300;
-  --color-copper-900: #443427;
+@theme {
+  /* Primary: Irish Coffee (Warm Amber/Brown) */
+  --color-primary-50: #fbfaeb;
+  --color-primary-100: #f7f3ca;
+  --color-primary-200: #f1e697;
+  --color-primary-300: #e8d15c;
+  --color-primary-400: #e0bb2f;
+  --color-primary-500: #d0a522;
+  --color-primary-600: #b3811b;
+  --color-primary-700: #8f5f19;
+  --color-primary-800: #774c1c;
+  --color-primary-900: #5c391a;
+  --color-primary-950: #3b210d;
 
-  /* Brass (Grey Colour)*/
+  /* Accent: Teal Blue (Complementary to the warm tones) */
+  --color-accent-50: #eefbfd;
+  --color-accent-100: #d5f2f7;
+  --color-accent-200: #ade5ef;
+  --color-accent-300: #75d1e0;
+  --color-accent-400: #40b8c9;
+  --color-accent-500: #2c9db0;
+  --color-accent-600: #267d91;
+  --color-accent-700: #246576;
+  --color-accent-800: #235262;
+  --color-accent-900: #1f4552;
+  --color-accent-950: #122e38;
 
-  --color-brass-100: #ded0a7;
-  --color-brass-200: #d7c798;
-  --color-brass-300: #d2bd80;
-  --color-brass-400: #cbb162;
-  --color-brass-500: #bf9b16;
-  --color-brass-600: #8e6d00;
-  --color-brass-700: #816300;
-  --color-brass-800: #5f4700;
-  --color-brass-900: #2c1e00;
+  /* Secondary: Sage Green (Harmonizes with earthy tones) */
+  --color-secondary-50: #f6f8f3;
+  --color-secondary-100: #e9efe1;
+  --color-secondary-200: #d5e0cb;
+  --color-secondary-300: #b7c9aa;
+  --color-secondary-400: #96ad85;
+  --color-secondary-500: #7a9167;
+  --color-secondary-600: #617451;
+  --color-secondary-700: #4d5c42;
+  --color-secondary-800: #404a37;
+  --color-secondary-900: #353e2f;
+  --color-secondary-950: #1a2018;
 
-  /* Parchment (Background Color)*/
+  /* Neutrals: Warm Grays (Maintains warmth of the palette) */
+  --color-neutral-50: #f9f8f6;
+  --color-neutral-100: #f0eee9;
+  --color-neutral-200: #e2ded5;
+  --color-neutral-300: #cfc7bb;
+  --color-neutral-400: #b7ae9d;
+  --color-neutral-500: #a49988;
+  --color-neutral-600: #8d8273;
+  --color-neutral-700: #736960;
+  --color-neutral-800: #5f5750;
+  --color-neutral-900: #4e4842;
+  --color-neutral-950: #292622;
 
-  --color-parchment: #f4ecd8;
+  /* Success: Olive Green (Fits the earthy aesthetic) */
+  --color-success-50: #f7f9e9;
+  --color-success-100: #eef3d0;
+  --color-success-200: #dfe6a7;
+  --color-success-300: #cad675;
+  --color-success-400: #b4c14c;
+  --color-success-500: #99aa33;
+  --color-success-600: #788726;
+  --color-success-700: #5d6822;
+  --color-success-800: #4b5321;
+  --color-success-900: #404620;
+  --color-success-950: #20260e;
 
-  /* Miscellaneous colors*/
+  /* Warning: Terracotta (Natural extension of the palette) */
+  --color-warning-50: #fcf7ee;
+  --color-warning-100: #f8ebda;
+  --color-warning-200: #f1d3b3;
+  --color-warning-300: #e9b584;
+  --color-warning-400: #e19055;
+  --color-warning-500: #d66e32;
+  --color-warning-600: #c45128;
+  --color-warning-700: #a23d24;
+  --color-warning-800: #833324;
+  --color-warning-900: #6b2c21;
+  --color-warning-950: #3a150f;
 
-  --color-verdigris: #4f6d7a;
-  --color-mistWhite: #f5f5f5;
-  --color-slateDark: #1f1f1f;
-  --color-steelBlue: #4682b4;
-  --color-ink: #0f0f0f;
-  --color-bloodRed: #8b0000;
+  /* Error: Berry Red (Stands out but still fits the scheme) */
+  --color-error-50: #fdf3f3;
+  --color-error-100: #fbe5e5;
+  --color-error-200: #f8cfcf;
+  --color-error-300: #f2adad;
+  --color-error-400: #e87e7e;
+  --color-error-500: #db5555;
+  --color-error-600: #c73939;
+  --color-error-700: #a62b2b;
+  --color-error-800: #8a2727;
+  --color-error-900: #742626;
+  --color-error-950: #3f1010;
+
+  /* Backgrounds */
+  --color-bg-primary: #fcfbf5; /* Warm off-white */
+  --color-bg-secondary: #f6f3e8; /* Light cream */
+  --color-bg-tertiary: #efe8d6; /* Warmer section backgrounds */
+  --color-bg-accent: #fbf9eb; /* Very light primary shade for highlights */
+  --color-bg-dark: #292622; /* Dark background (based on neutral-950) */
+
+  /* Border and Divider */
+  --color-border-light: var(--color-neutral-200);
+  --color-border-medium: var(--color-neutral-300);
+  --color-border-dark: var(--color-neutral-400);
+
+  /* Text Colors */
+  --color-text-primary: var(--color-neutral-950);
+  --color-text-secondary: var(--color-neutral-700);
+  --color-text-tertiary: var(--color-neutral-500);
+  --color-text-on-dark: var(--color-neutral-50);
+  --color-text-accent: var(--color-accent-700);
+  --color-text-link: var(--color-accent-600);
+  --color-text-success: var(--color-success-700);
+  --color-text-warning: var(--color-warning-700);
+  --color-text-error: var(--color-error-700);
 }

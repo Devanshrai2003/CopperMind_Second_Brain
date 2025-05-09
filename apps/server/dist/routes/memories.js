@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const client_1 = require("@prisma/client");
 const auth_1 = require("../middleware/auth");
+const cloudinary_1 = require("../utils/cloudinary");
 const memoryRouter = (0, express_1.Router)();
 const prisma = new client_1.PrismaClient();
 memoryRouter.post("/add-memory", auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -46,6 +47,20 @@ memoryRouter.post("/add-memory", auth_1.auth, (req, res) => __awaiter(void 0, vo
         res.status(500).json({ error: "Internal server error" });
     }
 }));
+memoryRouter.post("/add-image", cloudinary_1.upload.single("image"), (req, res) => {
+    try {
+        const file = req.file;
+        if (!file || !file.path) {
+            res.status(400).json({ error: "No image uploaded" });
+            return;
+        }
+        res.status(200).json({ url: file.path });
+    }
+    catch (error) {
+        console.error("Image upload error:", error);
+        res.status(500).json({ error: "Upload failed" });
+    }
+});
 memoryRouter.get("/get-memories", auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     if (!user) {

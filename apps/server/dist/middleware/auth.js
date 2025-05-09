@@ -15,7 +15,7 @@ const prisma = new client_1.PrismaClient();
 function auth(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         var _a;
-        const id = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.userId;
+        const id = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.auth_token;
         if (!id) {
             res.status(401).json({
                 message: "User not authenticated",

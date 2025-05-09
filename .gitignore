@@ -4,3 +4,4 @@ apps/server/node_modules
 apps/client/.env
 apps/server/.env
 .env
+old-client(delete-later)
