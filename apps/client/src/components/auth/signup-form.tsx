@@ -1,5 +1,4 @@
 import { ChangeEvent, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import {
@@ -38,7 +37,6 @@ export function SignUpForm({
   const [errors, setErrors] = useState<Partial<SignUpData>>({});
   const [apiError, setApiError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -103,8 +101,6 @@ export function SignUpForm({
         if (onSuccess) {
           onSuccess();
         }
-
-        navigate("/memory-page");
       }
     } catch (error: any) {
       console.error("Error sending backend request", error);

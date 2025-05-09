@@ -35,6 +35,7 @@ export default function AuthModal({
 
   const handleSuccess = () => {
     onClose();
+    navigate("/memory-page");
   };
 
   const handleGuestLogin = async () => {
