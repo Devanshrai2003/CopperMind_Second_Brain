@@ -8,6 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -16,29 +27,23 @@ const express_1 = require("express");
 const client_1 = require("@prisma/client");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const crypto_1 = require("crypto");
+const auth_1 = require("../middleware/auth");
+const jwt_1 = require("../utils/jwt");
 const userRouter = (0, express_1.Router)();
 const prisma = new client_1.PrismaClient();
-function sendAuthCookie(res, userId) {
-    res.cookie("auth_token", userId, {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
-    });
-}
 userRouter.post("/guest", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const guestId = (0, crypto_1.randomUUID)();
         const guestUser = yield prisma.user.create({
             data: {
-                username: "Guest",
+                username: `Guest${guestId.slice(0, 5)}`,
                 googleId: `guest_${guestId.slice(0, 5)}`,
                 email: `guest_${guestId}@coppermind.local`,
                 avatar: "https://api.dicebear.com/9.x/initials/svg?seed=guest?radius=50",
                 isGuest: true,
             },
         });
-        sendAuthCookie(res, guestUser.id);
+        (0, jwt_1.setAuthCookie)(res, guestUser.id, guestUser.username);
         res.json({
             message: "Guest account created",
             user: guestUser,
@@ -56,18 +61,31 @@ userRouter.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, funct
         return;
     }
     try {
+        const existingUser = yield prisma.user.findFirst({
+            where: {
+                OR: [{ email }, { username }],
+            },
+        });
+        if (existingUser) {
+            res.status(400).json({
+                error: "User with this email or username already exists",
+            });
+            return;
+        }
         const hashedPassword = yield bcrypt_1.default.hash(password, 10);
         const user = yield prisma.user.create({
             data: {
                 username,
                 email,
                 password: hashedPassword,
+                avatar: `https://api.dicebear.com/9.x/initials/svg?seed=${username}?radius=50`,
             },
         });
-        sendAuthCookie(res, user.id);
+        const { password: _ } = user, userWithoutPassword = __rest(user, ["password"]);
+        (0, jwt_1.setAuthCookie)(res, user.id, user.username);
         res.status(201).json({
             message: "Account created successfully",
-            user,
+            user: userWithoutPassword,
         });
     }
     catch (error) {
@@ -76,13 +94,13 @@ userRouter.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 }));
 userRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { username, password } = req.body;
+    if (!username || !password) {
         res.status(400).json({ error: "Missing email or password" });
         return;
     }
     try {
-        const user = yield prisma.user.findUnique({ where: { email } });
+        const user = yield prisma.user.findUnique({ where: { username } });
         if (!user || !user.password) {
             res.status(400).json({ error: "Invalid credentials" });
             return;
@@ -92,10 +110,11 @@ userRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, functi
             res.status(400).json({ error: "Invalid credentials" });
             return;
         }
-        sendAuthCookie(res, user.id);
+        const { password: _ } = user, userWithoutPassword = __rest(user, ["password"]);
+        (0, jwt_1.setAuthCookie)(res, user.id, user.username);
         res.status(200).json({
             message: "Login successful",
-            user,
+            user: userWithoutPassword,
         });
     }
     catch (error) {
@@ -103,4 +122,18 @@ userRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, functi
         res.status(500).json({ error: "Login failed" });
     }
 }));
+userRouter.post("/logout", (req, res) => {
+    (0, jwt_1.clearAuthCookie)(res);
+    res.status(200).json({ message: "Logged out successfully" });
+    return;
+});
+userRouter.get("/me", auth_1.auth, (req, res) => {
+    const user = req.user;
+    if (!user) {
+        res.status(401).json({ error: "User not authenticated" });
+        return;
+    }
+    const { password: _ } = user, userWithoutPassword = __rest(user, ["password"]);
+    res.status(200).json({ user: userWithoutPassword });
+});
 exports.default = userRouter;

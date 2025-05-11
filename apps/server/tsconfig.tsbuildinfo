@@ -1,1 +1,1 @@
-{"root":["./src/index.ts","./src/middleware/auth.ts","./src/routes/memories.ts","./src/routes/users.ts","./src/utils/cloudinary.ts","./src/utils/string-generator.ts","./types/express.d.ts"],"version":"5.8.3"}
+{"root":["./src/index.ts","./src/middleware/auth.ts","./src/routes/memories.ts","./src/routes/users.ts","./src/utils/cloudinary.ts","./src/utils/jwt.ts","./src/utils/string-generator.ts","./types/express.d.ts"],"version":"5.8.3"}

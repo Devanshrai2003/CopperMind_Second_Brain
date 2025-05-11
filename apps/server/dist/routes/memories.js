@@ -47,7 +47,7 @@ memoryRouter.post("/add-memory", auth_1.auth, (req, res) => __awaiter(void 0, vo
         res.status(500).json({ error: "Internal server error" });
     }
 }));
-memoryRouter.post("/add-image", cloudinary_1.upload.single("image"), (req, res) => {
+memoryRouter.post("/add-image", auth_1.auth, cloudinary_1.upload.single("image"), (req, res) => {
     try {
         const file = req.file;
         if (!file || !file.path) {
@@ -113,7 +113,7 @@ memoryRouter.put("/update-memory/:id", auth_1.auth, (req, res) => __awaiter(void
             },
         });
         res.status(200).json({
-            message: "memory updatedMemory successfully",
+            message: "Memory updated successfully",
             memory: updatedMemory,
         });
     }

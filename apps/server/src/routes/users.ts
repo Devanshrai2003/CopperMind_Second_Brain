@@ -2,18 +2,11 @@ import { Router, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { randomUUID } from "crypto";
+import { auth } from "../middleware/auth";
+import { setAuthCookie, clearAuthCookie } from "../utils/jwt";
 
 const userRouter = Router();
 const prisma = new PrismaClient();
-
-function sendAuthCookie(res: Response, userId: string) {
-  res.cookie("auth_token", userId, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
-  });
-}
 
 userRouter.post("/guest", async (req: Request, res: Response) => {
   try {
@@ -21,7 +14,7 @@ userRouter.post("/guest", async (req: Request, res: Response) => {
 
     const guestUser = await prisma.user.create({
       data: {
-        username: "Guest",
+        username: `Guest${guestId.slice(0, 5)}`,
         googleId: `guest_${guestId.slice(0, 5)}`,
         email: `guest_${guestId}@coppermind.local`,
         avatar:
@@ -30,7 +23,7 @@ userRouter.post("/guest", async (req: Request, res: Response) => {
       },
     });
 
-    sendAuthCookie(res, guestUser.id);
+    setAuthCookie(res, guestUser.id, guestUser.username);
 
     res.json({
       message: "Guest account created",
@@ -51,6 +44,19 @@ userRouter.post("/signup", async (req: Request, res: Response) => {
   }
 
   try {
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        OR: [{ email }, { username }],
+      },
+    });
+
+    if (existingUser) {
+      res.status(400).json({
+        error: "User with this email or username already exists",
+      });
+      return;
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await prisma.user.create({
@@ -58,14 +64,17 @@ userRouter.post("/signup", async (req: Request, res: Response) => {
         username,
         email,
         password: hashedPassword,
+        avatar: `https://api.dicebear.com/9.x/initials/svg?seed=${username}?radius=50`,
       },
     });
 
-    sendAuthCookie(res, user.id);
+    const { password: _, ...userWithoutPassword } = user;
+
+    setAuthCookie(res, user.id, user.username);
 
     res.status(201).json({
       message: "Account created successfully",
-      user,
+      user: userWithoutPassword,
     });
   } catch (error) {
     console.error("error signing up", error);
@@ -74,15 +83,15 @@ userRouter.post("/signup", async (req: Request, res: Response) => {
 });
 
 userRouter.post("/login", async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
-  if (!email || !password) {
+  if (!username || !password) {
     res.status(400).json({ error: "Missing email or password" });
     return;
   }
 
   try {
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({ where: { username } });
 
     if (!user || !user.password) {
       res.status(400).json({ error: "Invalid credentials" });
@@ -96,16 +105,36 @@ userRouter.post("/login", async (req: Request, res: Response) => {
       return;
     }
 
-    sendAuthCookie(res, user.id);
+    const { password: _, ...userWithoutPassword } = user;
+
+    setAuthCookie(res, user.id, user.username);
 
     res.status(200).json({
       message: "Login successful",
-      user,
+      user: userWithoutPassword,
     });
   } catch (error) {
     console.error("error logging in", error);
     res.status(500).json({ error: "Login failed" });
   }
+});
+
+userRouter.post("/logout", (req: Request, res: Response) => {
+  clearAuthCookie(res);
+  res.status(200).json({ message: "Logged out successfully" });
+  return;
+});
+
+userRouter.get("/me", auth, (req: Request, res: Response) => {
+  const user = req.user;
+  if (!user) {
+    res.status(401).json({ error: "User not authenticated" });
+    return;
+  }
+
+  const { password: _, ...userWithoutPassword } = user;
+
+  res.status(200).json({ user: userWithoutPassword });
 });
 
 export default userRouter;

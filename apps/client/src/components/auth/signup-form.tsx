@@ -95,7 +95,7 @@ export function SignUpForm({
         onSubmit(formData);
       }
 
-      if (response.data && response.status === 200) {
+      if (response.data && response.status === 201) {
         console.log("Signup success", response.data);
 
         if (onSuccess) {

@@ -5,9 +5,11 @@ CREATE TYPE "MemoryType" AS ENUM ('link', 'image', 'note');
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "googleId" TEXT,
-    "name" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "avatar" TEXT NOT NULL,
+    "isGuest" BOOLEAN NOT NULL DEFAULT false,
+    "username" TEXT NOT NULL,
+    "email" TEXT,
+    "password" TEXT,
+    "avatar" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -22,6 +24,7 @@ CREATE TABLE "Memory" (
     "tags" TEXT[],
     "description" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "shared" BOOLEAN NOT NULL DEFAULT false,
     "url" TEXT,
     "userId" TEXT NOT NULL,
 

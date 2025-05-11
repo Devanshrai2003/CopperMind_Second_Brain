@@ -11,28 +11,41 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.auth = auth;
 const client_1 = require("@prisma/client");
+const jwt_1 = require("../utils/jwt");
 const prisma = new client_1.PrismaClient();
 function auth(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         var _a;
-        const id = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.auth_token;
-        if (!id) {
+        const token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.token;
+        if (!token) {
             res.status(401).json({
                 message: "User not authenticated",
             });
             return;
         }
         try {
-            const user = yield prisma.user.findUnique({ where: { id } });
+            const decoded = (0, jwt_1.verifyToken)(token);
+            const user = yield prisma.user.findUnique({
+                where: { id: decoded.id },
+            });
             if (!user) {
-                res.status(401).json({ error: "Invalid user ID" });
+                res.status(401).json({ error: "Invalid user" });
                 return;
             }
             req.user = user;
             next();
         }
-        catch (err) {
-            res.status(500).json({ error: "Failed to authenticate user" });
+        catch (error) {
+            if (error.name === "TokenExpiredError") {
+                res.status(401).json({ error: "Token expired" });
+            }
+            else if (error.name === "JsonWebTokenError") {
+                res.status(401).json({ error: "Invalid token" });
+            }
+            else {
+                console.error("Authentication error:", error);
+                res.status(500).json({ error: "Failed to authenticate user" });
+            }
             return;
         }
     });

@@ -1,9 +1,27 @@
-import { createContext, useState, useContext, ReactNode } from "react";
+import {
+  createContext,
+  useState,
+  useContext,
+  ReactNode,
+  useEffect,
+} from "react";
 import AuthModal from "../components/auth/auth-modal";
 
 type AuthMode = "signup" | "login";
 
+interface UserData {
+  id: string;
+  username: string;
+  email?: string;
+  avatar?: string;
+  isGuest?: boolean;
+}
+
 interface AuthContextType {
+  user: UserData | null;
+  loading: boolean;
+  refreshUser: () => Promise<void>;
+  logout: () => Promise<void>;
   openLoginModal: () => void;
   openSignupModal: () => void;
   closeAuthModal: () => void;
@@ -14,6 +32,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<AuthMode>("login");
+  const [user, setUser] = useState<UserData | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const openLoginModal = () => {
     setAuthMode("login");
@@ -29,9 +49,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsAuthModalOpen(false);
   };
 
+  const refreshUser = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get<{ user: UserData }>(
+        `${import.meta.env.VITE_API_URL}/api/users/me`,
+        { withCredentials: true }
+      );
+      setUser(res.data.user);
+    } catch {
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/users/logout`,
+        {},
+        { withCredentials: true }
+      );
+    } catch (err) {
+      console.error("Logout failed", err);
+    } finally {
+      setUser(null);
+    }
+  };
+
+  useEffect(() => {
+    refreshUser();
+  }, []);
+
   return (
     <AuthContext.Provider
-      value={{ openLoginModal, openSignupModal, closeAuthModal }}
+      value={{
+        user,
+        loading,
+        openLoginModal,
+        openSignupModal,
+        closeAuthModal,
+        logout,
+        refreshUser,
+      }}
     >
       {children}
       <AuthModal

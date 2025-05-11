@@ -1,6 +1,19 @@
+import { useNavigate } from "react-router-dom";
 import { Button } from "../common/button";
+import { useAuth } from "../../context/auth-context";
 
 export function Hero() {
+  const { openSignupModal, user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  const handleGetStarted = async () => {
+    if (user) {
+      navigate("/memory-page");
+    } else {
+      openSignupModal();
+    }
+  };
+
   return (
     <section id="home" className="relative min-h-screen flex items-center">
       <div className="absolute inset-0 bg-radial from-primary-200 via-primary-300 to-primary-600 z-0"></div>
@@ -20,7 +33,15 @@ export function Hero() {
           <p className="inline text-primary-800"> CopperMind</p>.
         </h1>
         <div className="text-white">
-          <Button size="hero" variant="hero" text="Get Started" />
+          <Button
+            size="hero"
+            variant="hero"
+            text="Get Started"
+            onClick={handleGetStarted}
+          />
+          {loading && (
+            <div className="w-5 h-5 border-t-2 border-b-2 border-border-medium rounded-full animate-spin mr-2" />
+          )}
         </div>
       </div>
     </section>

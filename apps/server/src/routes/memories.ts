@@ -43,6 +43,7 @@ memoryRouter.post("/add-memory", auth, async (req: Request, res: Response) => {
 
 memoryRouter.post(
   "/add-image",
+  auth,
   upload.single("image"),
   (req: Request, res: Response) => {
     try {
@@ -123,7 +124,7 @@ memoryRouter.put(
       });
 
       res.status(200).json({
-        message: "memory updatedMemory successfully",
+        message: "Memory updated successfully",
         memory: updatedMemory,
       });
     } catch (error) {

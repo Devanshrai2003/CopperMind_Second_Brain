@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../../context/auth-context";
 import { Modal } from "../common/modal";
 import { SignUpForm } from "./signup-form";
 import { LogInForm } from "./login-form";
@@ -20,6 +21,7 @@ export default function AuthModal({
   const [isLoading, setIsLoading] = useState(false);
   const [guestError, setGuestError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { refreshUser } = useAuth();
   const title = mode === "signup" ? "Sign Up" : "Log In";
 
   useEffect(() => {
@@ -33,9 +35,12 @@ export default function AuthModal({
     }
   }, [isOpen]);
 
-  const handleSuccess = () => {
+  const handleSuccess = async () => {
+    await refreshUser();
     onClose();
-    navigate("/memory-page");
+    setTimeout(() => {
+      navigate("/memory-page");
+    }, 20);
   };
 
   const handleGuestLogin = async () => {
@@ -44,17 +49,18 @@ export default function AuthModal({
       setGuestError(null);
 
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/guest`,
+        `${import.meta.env.VITE_API_URL}/api/users/guest`,
         {},
         { withCredentials: true }
       );
 
       if (response.data && response.status === 200) {
         console.log("Guest login success", response.data);
-
+        await refreshUser();
         onClose();
-
-        navigate("/memory-page");
+        setTimeout(() => {
+          navigate("/memory-page");
+        }, 100);
       }
     } catch (error: any) {
       console.error("Error with guest login", error);
@@ -94,7 +100,7 @@ export default function AuthModal({
           <p>
             Don't have an account?{" "}
             <button
-              className="text-blue-800 hover:underline"
+              className="text-text-link hover:underline"
               onClick={() => setMode("signup")}
               disabled={isLoading}
             >
@@ -105,7 +111,7 @@ export default function AuthModal({
           <p>
             Already have an account?{" "}
             <button
-              className="text-blue-800 hover:underline"
+              className="text-text-link hover:underline"
               onClick={() => setMode("login")}
               disabled={isLoading}
             >

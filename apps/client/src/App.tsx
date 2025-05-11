@@ -4,16 +4,19 @@ import { AuthProvider } from "./context/auth-context";
 
 import { HomePage } from "./pages/home-page";
 import { MemoryPage } from "./pages/memory-page";
+import { MainLayout } from "./layouts/main-layout";
 
 function App() {
   return (
     <>
       <BrowserRouter>
         <AuthProvider>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/memory-page" element={<MemoryPage />} />
-          </Routes>
+          <MainLayout>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/memory-page" element={<MemoryPage />} />
+            </Routes>
+          </MainLayout>
         </AuthProvider>
       </BrowserRouter>
     </>

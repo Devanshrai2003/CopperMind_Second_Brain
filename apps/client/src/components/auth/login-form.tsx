@@ -154,7 +154,7 @@ export function LogInForm({
               className={`w-full pl-10 pr-10 py-2 border ${
                 errors.password ? "border-red-600" : "border-border-medium"
               } rounded-lg focus:outline-none focus:ring-2 focus:ring-copper-1000`}
-              placeholder="Create a password"
+              placeholder="Enter your password"
             />
             <button
               type="button"
