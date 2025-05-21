@@ -32,6 +32,7 @@
     "zod": "^3.24.3"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.18",
     "@types/express": "^5.0.1",
     "@types/node": "^22.14.1",
     "ts-node-dev": "^2.0.0",
