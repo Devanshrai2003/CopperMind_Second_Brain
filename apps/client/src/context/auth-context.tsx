@@ -5,7 +5,9 @@ import {
   ReactNode,
   useEffect,
 } from "react";
+import axios from "axios";
 import AuthModal from "../components/auth/auth-modal";
+import { useNavigate } from "react-router-dom";
 
 type AuthMode = "signup" | "login";
 
@@ -34,6 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [authMode, setAuthMode] = useState<AuthMode>("login");
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const openLoginModal = () => {
     setAuthMode("login");
@@ -71,6 +74,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         {},
         { withCredentials: true }
       );
+
+      navigate("/");
     } catch (err) {
       console.error("Logout failed", err);
     } finally {

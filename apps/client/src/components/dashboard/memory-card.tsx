@@ -6,7 +6,7 @@ import {
   ShareIcon,
   ChevronDoubleRightIcon,
 } from "@heroicons/react/16/solid";
-import { Button } from "./button";
+import { Button } from "../common/button";
 
 interface MemoryCardProps {
   title: string;
@@ -15,6 +15,9 @@ interface MemoryCardProps {
   description: string;
   createdAt: string;
   url?: string;
+  onEdit?: () => void;
+  onDelete?: () => void;
+  onShare?: () => void;
 }
 
 export function MemoryCard({
@@ -24,9 +27,12 @@ export function MemoryCard({
   description,
   createdAt,
   url,
+  onEdit,
+  onDelete,
+  onShare,
 }: MemoryCardProps) {
   return (
-    <div className="w-full max-w-sm mx-auto bg-bg-tertiary rounded-xl shadow-md overflow-hidden border-2 border-border-dark p-4 flex flex-col gap-4 hover:shadow-lg hover:-translate-y-0.5 transition">
+    <div className="w-full max-w-sm mx-auto bg-bg-tertiary rounded-xl shadow-md overflow-hidden border-2 border-border-dark p-4 flex flex-col col-span-3 gap-4 hover:shadow-lg hover:-translate-y-0.5 transition">
       {type === "link" && url ? (
         <div className="aspect-video h-auto border-2 border-border-dark rounded-xl flex justify-center items-center">
           {renderMedia(type, url)}
@@ -58,16 +64,19 @@ export function MemoryCard({
             size="sm"
             startIcon={<ShareIcon className="size-4 text-primary-950" />}
             variant="card"
+            onClick={onShare}
           />
           <Button
             size="sm"
             startIcon={<PencilIcon className="size-4 text-primary-950" />}
             variant="card"
+            onClick={onEdit}
           />
           <Button
             size="sm"
             startIcon={<TrashIcon className="size-4 text-primary-950" />}
             variant="card"
+            onClick={onDelete}
           />
         </div>
       </div>

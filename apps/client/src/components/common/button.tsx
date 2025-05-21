@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 export interface ButtonProps {
-  variant: "primary" | "secondary" | "card" | "delete" | "hero";
+  variant: "primary" | "secondary" | "card" | "delete" | "hero" | "sidebar";
   size: "sm" | "md" | "lg" | "hero";
   text?: string;
   startIcon?: ReactNode;
@@ -67,11 +67,19 @@ const variantStyles = {
       transition-all duration-300 ease-in-out 
       shadow-lg rounded-full
     `,
+  sidebar: `
+    bg-white text-primary-900 border border-primary-300 
+    hover:border-primary-400 hover:bg-primary-50 
+    active:bg-primary-100 flex justify-start
+    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2
+    disabled:text-primary-300 disabled:border-primary-100 
+    transition-all duration-200 ease-in-out 
+  `,
 };
 
 const sizeStyles = {
   sm: "text-sm px-3 py-1.5 gap-1.5",
-  md: "text-base px-4 py-2 gap-2",
+  md: "px-4 py-1 gap-2",
   lg: "text-lg px-6 py-2.5 gap-2.5",
   hero: "text-4xl px-12 py-5 gap-2.5",
 };
