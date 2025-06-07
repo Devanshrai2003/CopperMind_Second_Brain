@@ -32,7 +32,7 @@ export function MemoryCard({
   onShare,
 }: MemoryCardProps) {
   return (
-    <div className="w-full max-w-sm mx-auto bg-bg-tertiary rounded-xl shadow-md overflow-hidden border-2 border-border-dark p-4 flex flex-col col-span-3 gap-4 hover:shadow-lg hover:-translate-y-0.5 transition">
+    <div className="w-full max-w-sm mx-auto bg-bg-tertiary rounded-xl shadow-md overflow-hidden border-2 border-border-dark p-4 flex flex-col gap-4 hover:shadow-lg hover:-translate-y-0.5 transition">
       {type === "link" && url ? (
         <div className="aspect-video h-auto border-2 border-border-dark rounded-xl flex justify-center items-center">
           {renderMedia(type, url)}

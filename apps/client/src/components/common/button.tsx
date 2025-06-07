@@ -13,7 +13,7 @@ export interface ButtonProps {
 }
 
 const baseStyle =
-  "flex items-center justify-center rounded-fullll font-medium transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
+  "flex items-center justify-center rounded-full font-medium transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 cursor-pointer";
 
 const variantStyles = {
   primary: `
@@ -105,7 +105,7 @@ export function Button({
     >
       {isLoading && (
         <span className="absolute inset-0 flex items-center justify-center">
-          <span className="w-10 h-10 border-4 border-t-accent-500 border-accent-300 rounded-fullll animate-spin"></span>
+          <span className="w-10 h-10 border-4 border-t-accent-500 border-accent-300 rounded-full animate-spin"></span>
         </span>
       )}
 

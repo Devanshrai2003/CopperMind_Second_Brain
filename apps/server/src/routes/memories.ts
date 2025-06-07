@@ -70,16 +70,55 @@ memoryRouter.get("/get-memories", auth, async (req: Request, res: Response) => {
   }
 
   try {
-    const memories = await prisma.memory.findMany({
-      where: {
-        userId: user.id,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
+    const page = Math.max(1, parseInt(req.query.page as string) || 1);
+    const limit = 10;
+    const skip = (page - 1) * limit;
+
+    const sortOrder = req.query.sortOrder === "asc" ? "asc" : "desc";
+    const search = req.query.search as string;
+    const type = req.query.type as string;
+
+    const whereClause: any = {
+      userId: user.id,
+    };
+
+    if (search) {
+      whereClause.OR = [
+        { title: { contains: search, mode: "insensitive" } },
+        { tags: { hasSome: [search] } },
+      ];
+    }
+
+    if (type && type !== "all") {
+      whereClause.type = type;
+    }
+
+    const totalMemories = await prisma.memory.count({
+      where: whereClause,
     });
 
-    res.json({ memories });
+    const memories = await prisma.memory.findMany({
+      where: whereClause,
+      orderBy: {
+        createdAt: sortOrder,
+      },
+      skip,
+      take: limit,
+    });
+
+    const totalPages = Math.ceil(totalMemories / limit);
+
+    res.json({
+      memories,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalMemories,
+        limit,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      },
+    });
   } catch (error) {
     console.error("Error fetching user memories:", error);
     res.status(500).json({ error: "Internal server error" });

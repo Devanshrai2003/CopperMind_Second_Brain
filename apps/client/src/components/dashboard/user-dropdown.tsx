@@ -18,7 +18,7 @@ export function UserDropdown({
       <MenuButton>
         {" "}
         <img
-          className="rounded-full hover:opacity-80 active:opacity-70 transition-all"
+          className="rounded-full hover:opacity-80 active:opacity-70 transition-all cursor-pointer"
           src={avatarSrc}
           alt="User Profile"
           width={42}
@@ -40,7 +40,7 @@ export function UserDropdown({
         <MenuItem>
           <button
             onClick={logout}
-            className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-text-error data-focus:bg-neutral-100"
+            className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-text-error data-focus:bg-neutral-100 cursor-pointer"
           >
             <ArrowRightStartOnRectangleIcon className="size-5" />
             Log Out

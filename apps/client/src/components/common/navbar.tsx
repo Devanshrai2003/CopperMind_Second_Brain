@@ -5,11 +5,11 @@ import { UserDropdown } from "../dashboard/user-dropdown";
 import coppermindLogo from "../../assets/coppermindLogo-removebg-preview.png";
 
 export function Navbar() {
+  const navigate = useNavigate();
+
   const { user, loading, openLoginModal, openSignupModal } = useAuth();
 
   if (loading) return null;
-
-  const navigate = useNavigate();
 
   const handleNavigation = async () => {
     if (user) {

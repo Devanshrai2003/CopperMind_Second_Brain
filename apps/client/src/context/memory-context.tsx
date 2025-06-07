@@ -1,5 +1,3 @@
-// /src/context/MemoryContext.tsx
-
 import React, {
   createContext,
   useContext,
@@ -36,6 +34,7 @@ interface MemoryState {
   memories: Memory[];
   isLoading: boolean;
   error: string | null;
+  filterType: "link" | "image" | "note" | "all";
 }
 
 interface MemoryResponse {
@@ -69,11 +68,14 @@ type MemoryAction =
   | { type: "TOGGLE_SHARE_START" }
   | { type: "TOGGLE_SHARE_SUCCESS"; payload: Memory }
   | { type: "TOGGLE_SHARE_ERROR"; payload: string }
-  | { type: "CLEAR_ERROR" };
+  | { type: "CLEAR_ERROR" }
+  | { type: "SET_FILTER_TYPE"; payload: MemoryType | "all" };
 
 interface MemoryContextType {
   state: MemoryState;
   fetchMemories: () => Promise<void>;
+  filterType: MemoryType | "all";
+  setFilterType: (type: MemoryType | "all") => void;
   addMemory: (memoryData: MemoryInput) => Promise<void>;
   updateMemory: (id: string, memoryData: Partial<MemoryInput>) => Promise<void>;
   deleteMemory: (id: string) => Promise<void>;
@@ -86,6 +88,7 @@ const initialState: MemoryState = {
   memories: [],
   isLoading: false,
   error: null,
+  filterType: "all",
 };
 
 const MemoryContext = createContext<MemoryContextType | undefined>(undefined);
@@ -156,6 +159,12 @@ const memoryReducer = (
         error: null,
       };
 
+    case "SET_FILTER_TYPE":
+      return {
+        ...state,
+        filterType: action.payload,
+      };
+
     default:
       return state;
   }
@@ -175,6 +184,10 @@ export const MemoryProvider: React.FC<MemoryProviderProps> = ({ children }) => {
     },
     withCredentials: true,
   });
+
+  const setFilterType = (type: MemoryType | "all") => {
+    dispatch({ type: "SET_FILTER_TYPE", payload: type });
+  };
 
   const fetchMemories = async () => {
     dispatch({ type: "FETCH_MEMORIES_START" });
@@ -264,14 +277,14 @@ export const MemoryProvider: React.FC<MemoryProviderProps> = ({ children }) => {
       const formData = new FormData();
       formData.append("image", file);
 
-      const response = await api.post<ImageUploadResponse>(
+      const imageApi = axios.create({
+        baseURL: `${import.meta.env.VITE_API_URL}/api/memories`,
+        withCredentials: true,
+      });
+
+      const response = await imageApi.post<ImageUploadResponse>(
         "/add-image",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        formData
       );
 
       return response.data.url;
@@ -291,7 +304,9 @@ export const MemoryProvider: React.FC<MemoryProviderProps> = ({ children }) => {
 
   const value = {
     state,
+    filterType: state.filterType,
     fetchMemories,
+    setFilterType,
     addMemory,
     updateMemory,
     deleteMemory,
