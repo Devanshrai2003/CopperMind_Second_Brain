@@ -103,6 +103,7 @@ function renderMedia(type: string, url?: string) {
     const videoId = new URL(url).searchParams.get("v");
     return (
       <iframe
+        key={url}
         src={`https://www.youtube.com/embed/${videoId}`}
         className="w-full aspect-video rounded-lg"
       ></iframe>
@@ -112,7 +113,11 @@ function renderMedia(type: string, url?: string) {
   if (type === "link" && url.includes("x.com")) {
     return (
       <div className="w-full h-auto max-w-full flex justify-center">
-        <XEmbed url={url.replace("x.com", "twitter.com")} className="w-full" />
+        <XEmbed
+          key={url}
+          url={url.replace("x.com", "twitter.com")}
+          className="w-full"
+        />
       </div>
     );
   }
@@ -120,7 +125,7 @@ function renderMedia(type: string, url?: string) {
   if (type === "link" && url.includes("instagram.com")) {
     return (
       <div className="w-full h-auto max-w-full flex bg-white rounded-lg justify-center">
-        <InstagramEmbed url={url} width={328} className="mt-3" />
+        <InstagramEmbed key={url} url={url} width={328} className="mt-3" />
       </div>
     );
   }
@@ -129,6 +134,7 @@ function renderMedia(type: string, url?: string) {
     return (
       <div className="w-full h-full max-w-full flex bg-white rounded-lg justify-center">
         <iframe
+          key={url}
           src={url}
           className="w-full h-full rounded-lg border-none"
           sandbox="allow-scripts allow-same-origin allow-popups"

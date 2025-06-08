@@ -68,15 +68,47 @@ memoryRouter.get("/get-memories", auth_1.auth, (req, res) => __awaiter(void 0, v
         return;
     }
     try {
+        const page = Math.max(1, parseInt(req.query.page) || 1);
+        const limit = 10;
+        const skip = (page - 1) * limit;
+        const sortOrder = req.query.sortOrder === "asc" ? "asc" : "desc";
+        const search = req.query.search;
+        const type = req.query.type;
+        const whereClause = {
+            userId: user.id,
+        };
+        if (search) {
+            whereClause.OR = [
+                { title: { contains: search, mode: "insensitive" } },
+                { tags: { hasSome: [search] } },
+            ];
+        }
+        if (type && type !== "all") {
+            whereClause.type = type;
+        }
+        const totalMemories = yield prisma.memory.count({
+            where: whereClause,
+        });
         const memories = yield prisma.memory.findMany({
-            where: {
-                userId: user.id,
-            },
+            where: whereClause,
             orderBy: {
-                createdAt: "desc",
+                createdAt: sortOrder,
+            },
+            skip,
+            take: limit,
+        });
+        const totalPages = Math.ceil(totalMemories / limit);
+        res.json({
+            memories,
+            pagination: {
+                currentPage: page,
+                totalPages,
+                totalMemories,
+                limit,
+                hasNextPage: page < totalPages,
+                hasPreviousPage: page > 1,
             },
         });
-        res.json({ memories });
     }
     catch (error) {
         console.error("Error fetching user memories:", error);
