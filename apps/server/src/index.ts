@@ -9,14 +9,15 @@ import cookieParser from "cookie-parser";
 const app = express();
 const prisma = new PrismaClient();
 
+app.use(cookieParser());
+app.use(express.json());
+
 app.use(
   cors({
     origin: `${process.env.FRONTEND_URL}`,
     credentials: true,
   })
 );
-app.use(cookieParser());
-app.use(express.json());
 
 import userRouter from "./routes/users";
 app.use("/api/users", userRouter);

@@ -1,91 +1,98 @@
-import { MemoryCard } from "./memory-card";
-import { Memory, useMemory } from "../../context/memory-context";
 import {
   ArrowDownIcon,
   ArrowLeftIcon,
   ArrowRightIcon,
   ArrowUpIcon,
   MagnifyingGlassIcon,
-  PlusCircleIcon,
 } from "@heroicons/react/24/solid";
 import { Button } from "../common/button";
 import { useEffect, useState } from "react";
-import { AddMemoryModal } from "./add-memory-modal";
+import { Memory, useMemory } from "../../context/memory-context";
 import { Loader } from "../common/loader";
+import axios from "axios";
+import { SharedMemoryCard } from "./shared-memory-card";
 
-export function MemoryArea() {
-  const { state, deleteMemory, toggleShare, filterType } = useMemory();
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const openMemoryModal = () => setIsModalOpen(true);
-  const [editingMemory, setEditingMemory] = useState<Memory | null>(null);
+export function ExploreArea() {
+  const [memories, setMemories] = useState<SharedMemory[]>([]);
+  const [filteredMemories, setFilteredMemories] = useState<SharedMemory[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+
+  const { filterType } = useMemory();
+
   const itemsPerPage = 6;
+
+  interface SharedMemory extends Omit<Memory, "userId"> {
+    user: {
+      username: string;
+    };
+  }
+
+  useEffect(() => {
+    axios
+      .get<SharedMemory[]>(
+        `${import.meta.env.VITE_API_URL}/api/memories/shared-memories`
+      )
+      .then((res) => {
+        setMemories(res.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching memories:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    const query = searchTerm.toLowerCase();
+    const filtered = memories
+      .filter(
+        (memory) =>
+          memory.title.toLowerCase().includes(query) ||
+          memory.description.toLowerCase().includes(query) ||
+          memory.tags.some((tag) => tag.toLowerCase().includes(query))
+      )
+      .filter((memory) =>
+        filterType === "all" ? true : memory.type === filterType
+      );
+
+    const sorted = [...filtered].sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+    });
+
+    setFilteredMemories(sorted);
+    setCurrentPage(1);
+  }, [searchTerm, sortOrder, memories, filterType]);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedMemories = filteredMemories.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
+  const totalPages = Math.ceil(filteredMemories.length / itemsPerPage);
 
   const toggleSortOrder = () => {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
   };
 
-  const handleEditMemory = (memory: Memory) => {
-    setEditingMemory(memory);
-    setIsModalOpen(true);
-  };
-
-  const handleDeleteMemory = (memory: Memory) => {
-    deleteMemory(memory.id);
-  };
-
-  const handleShareMemory = (memory: Memory) => {
-    toggleShare(memory.id);
-  };
-
-  const closeModal = () => {
-    setEditingMemory(null);
-    setIsModalOpen(false);
-  };
-
-  const filteredMemories = state.memories
-    .filter((memory) => {
-      const query = searchTerm.toLowerCase();
-      return (
-        memory.title.toLowerCase().includes(query) ||
-        memory.description.toLowerCase().includes(query) ||
-        memory.tags.some((tag) => tag.toLowerCase().includes(query))
-      );
-    })
-    .filter((memory) => {
-      return filterType === "all" || memory.type === filterType;
-    });
-
-  const sortedMemories = [...filteredMemories].sort((a, b) => {
-    const dateA = new Date(a.createdAt).getTime();
-    const dateB = new Date(b.createdAt).getTime();
-
-    return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
-  });
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedMemories = sortedMemories.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
-  const totalPages = Math.ceil(sortedMemories.length / itemsPerPage);
-
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, filterType, sortOrder]);
+  }, [filterType]);
+
+  if (loading) return <Loader />;
 
   return (
     <main className="h-fit w-full lg:px-38 bg-bg-primary">
       <div className="flex-1 p-6 overflow-y-auto">
-        <div className="flex flex-col gap-8 lg:flex-row justify-between items-center mb-12">
+        <div className="flex flex-col gap-8 lg:flex-row justify-center items-center mb-12">
           <div className="flex gap-4">
             <input
               type="text"
-              placeholder="Search memories..."
+              placeholder="Search public memories..."
               className="w-full max-w-sm px-4 py-2 border rounded-lg"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -114,24 +121,11 @@ export function MemoryArea() {
               />
             )}
           </div>
-          <Button
-            size="lg"
-            variant="primary"
-            text="Add Memory"
-            startIcon={<PlusCircleIcon className="size-6" />}
-            onClick={openMemoryModal}
-          />
         </div>
 
         <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 items-start gap-4">
           {paginatedMemories.map((memory) => (
-            <MemoryCard
-              key={memory.id}
-              {...memory}
-              onEdit={() => handleEditMemory(memory)}
-              onDelete={() => handleDeleteMemory(memory)}
-              onShare={() => handleShareMemory(memory)}
-            />
+            <SharedMemoryCard key={memory.id} {...memory} />
           ))}
         </div>
         <div className="flex justify-center items-center gap-4 mt-6">
@@ -158,12 +152,6 @@ export function MemoryArea() {
           />
         </div>
       </div>
-      {state.isLoading && <Loader />}
-      <AddMemoryModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        initialData={editingMemory || undefined}
-      />
     </main>
   );
 }

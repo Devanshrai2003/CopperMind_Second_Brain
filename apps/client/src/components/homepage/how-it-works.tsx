@@ -27,7 +27,7 @@ export function HowItWorks() {
   ];
 
   return (
-    <div className="py-24 bg-gradient-to-b from-bg-dark to-secondary-950">
+    <div className="py-24 lg:px-38 bg-gradient-to-b from-bg-dark to-secondary-950">
       <h2 className="text-3xl font-martel text-text-on-dark mx-4 mb-10 text-center md:text-left">
         How It Works:
       </h2>

@@ -19,7 +19,7 @@ export function Navbar() {
 
   return (
     <section>
-      <div className="flex flex-wrap justify-center flex-col sm:flex-row sm:justify-between items-center bg-neutral-100 border-b-neutral-300 sticky top-0 z-50 px-6 py-1 shadow-md">
+      <div className="flex flex-wrap justify-center flex-col sm:flex-row sm:justify-between items-center bg-neutral-100 border-b-neutral-300 sticky top-0 z-50 lg:px-38 px-6 py-1 shadow-md">
         <div className="flex justify-center items-center">
           <img src={coppermindLogo} width={50} height={50} />
           <h1 className="text-2xl text-primary-800 font-cormorant font-extrabold hover:text-primary-600 transition-colors duration-200 cursor-pointer">
@@ -27,17 +27,17 @@ export function Navbar() {
           </h1>
         </div>
         {user ? (
-          <div className="font-martel text-lg flex gap-4 items-center mt-4 sm:mt-0">
+          <div className="font-martel text-lg flex gap-12 items-center mt-4 sm:mt-0">
             <Button
               size="md"
               variant="primary"
-              text="Memories"
+              text="My Memories"
               onClick={handleNavigation}
             />
             <UserDropdown />
           </div>
         ) : (
-          <div className="font-martel hidden sm:flex gap-2">
+          <div className="font-martel hidden sm:flex gap-12">
             <Button
               size="sm"
               variant="secondary"

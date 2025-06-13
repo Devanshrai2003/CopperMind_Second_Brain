@@ -1,4 +1,4 @@
-import { RectangleStackIcon } from "@heroicons/react/24/solid";
+import { GlobeAltIcon, RectangleStackIcon } from "@heroicons/react/24/solid";
 import {
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
@@ -8,8 +8,10 @@ import {
 } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import { useMemory } from "../../context/memory-context";
+import { useNavigate } from "react-router-dom";
 
 export function Sidebar() {
+  const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(true);
   const handleSidebarCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -61,7 +63,7 @@ export function Sidebar() {
           )}
         </button>
       </div>
-      <div className="py-4">
+      <div>
         <ul>
           {menuItems.map((item, index) => (
             <li key={index}>
@@ -71,8 +73,8 @@ export function Sidebar() {
                 }
                 ${
                   filterType === item.type
-                    ? "bg-neutral-500 font-semibold"
-                    : "hover:bg-neutral-300"
+                    ? "bg-neutral-500/40 font-semibold"
+                    : "hover:bg-neutral-300/40"
                 }
 
                 `}
@@ -87,6 +89,17 @@ export function Sidebar() {
           ))}
         </ul>
       </div>
+      <button
+        className={`flex gap-4 items-center w-full py-4 pl-4 hover:bg-neutral-300/40 active:bg-neutral-500/40 border-t-2 border-t-border-medium transition-all cursor-pointer ${
+          isCollapsed ? "justify-start" : "space-x-3"
+        }`}
+        onClick={() => navigate("/explore-page")}
+      >
+        <div>
+          <GlobeAltIcon className="size-6 text-color-black" />
+        </div>
+        {isCollapsed && <span className="font-medium">Explore</span>}
+      </button>
     </aside>
   );
 }

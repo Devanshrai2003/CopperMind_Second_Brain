@@ -2,6 +2,8 @@ import {
   UsersIcon,
   PuzzlePieceIcon,
   SquaresPlusIcon,
+  FunnelIcon,
+  MagnifyingGlassIcon,
 } from "@heroicons/react/24/solid";
 
 const features = [
@@ -23,17 +25,34 @@ const features = [
     description:
       "Make any memory public with one click. Share knowledge with friends, teammates, or the world.",
   },
+  {
+    icon: <FunnelIcon className="size-6 text-white" />,
+    title: "Sorting and Filters",
+    description:
+      "Sort your memories in ascending or descending chronological order, or filter them based on their types.",
+  },
+  {
+    icon: <MagnifyingGlassIcon className="size-6 text-white" />,
+    title: "Quick Search",
+    description: "Quickly find any memory by searching for its title or tags.",
+  },
+  {
+    icon: <UsersIcon className="size-6 text-white" />,
+    title: "Multiple Device Support",
+    description:
+      "Use CopperMind on your computer, or the go on your tablet/mobile device, so your ideas are never lost.",
+  },
 ];
 
 export function Features() {
   return (
-    <section className="pt-24 pb-6 bg-gradient-to-r from-primary-700 via-primary-600 to-primary-700 border-t-4 border-b-4 border-t-primary-900 border-b-primary-500 font-medium">
+    <section className="py-24 lg:px-38 bg-gradient-to-r from-primary-700 via-primary-600 to-primary-700 border-t-4 border-b-4 border-t-primary-900 border-b-primary-500 font-medium">
       <h2 className="text-3xl md:text-4xl font-martel text-text-primary text-left ml-6 mb-12">
         Transform How You{" "}
         <span className="text-primary-200">Capture Ideas</span>:
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-6 md:px-12">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 px-6 md:px-12">
         {features.map((feature, idx) => (
           <article
             key={idx}

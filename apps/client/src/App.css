@@ -8,7 +8,6 @@
 }
 
 @theme {
-  /* Primary: Irish Coffee (Warm Amber/Brown) */
   --color-primary-50: #fbfaeb;
   --color-primary-100: #f7f3ca;
   --color-primary-200: #f1e697;
@@ -21,7 +20,6 @@
   --color-primary-900: #5c391a;
   --color-primary-950: #3b210d;
 
-  /* Accent: Teal Blue (Complementary to the warm tones) */
   --color-accent-50: #eefbfd;
   --color-accent-100: #d5f2f7;
   --color-accent-200: #ade5ef;
@@ -34,7 +32,6 @@
   --color-accent-900: #1f4552;
   --color-accent-950: #122e38;
 
-  /* Secondary: Sage Green (Harmonizes with earthy tones) */
   --color-secondary-50: #f6f8f3;
   --color-secondary-100: #e9efe1;
   --color-secondary-200: #d5e0cb;
@@ -47,7 +44,6 @@
   --color-secondary-900: #353e2f;
   --color-secondary-950: #1a2018;
 
-  /* Neutrals: Warm Grays (Maintains warmth of the palette) */
   --color-neutral-50: #f9f8f6;
   --color-neutral-100: #f0eee9;
   --color-neutral-200: #e2ded5;
@@ -60,7 +56,6 @@
   --color-neutral-900: #4e4842;
   --color-neutral-950: #292622;
 
-  /* Success: Olive Green (Fits the earthy aesthetic) */
   --color-success-50: #f7f9e9;
   --color-success-100: #eef3d0;
   --color-success-200: #dfe6a7;
@@ -73,7 +68,6 @@
   --color-success-900: #404620;
   --color-success-950: #20260e;
 
-  /* Warning: Terracotta (Natural extension of the palette) */
   --color-warning-50: #fcf7ee;
   --color-warning-100: #f8ebda;
   --color-warning-200: #f1d3b3;
@@ -86,7 +80,6 @@
   --color-warning-900: #6b2c21;
   --color-warning-950: #3a150f;
 
-  /* Error: Berry Red (Stands out but still fits the scheme) */
   --color-error-50: #fdf3f3;
   --color-error-100: #fbe5e5;
   --color-error-200: #f8cfcf;
@@ -99,19 +92,16 @@
   --color-error-900: #742626;
   --color-error-950: #3f1010;
 
-  /* Backgrounds */
-  --color-bg-primary: #fcfbf5; /* Warm off-white */
-  --color-bg-secondary: #f6f3e8; /* Light cream */
-  --color-bg-tertiary: #efe8d6; /* Warmer section backgrounds */
-  --color-bg-accent: #fbf9eb; /* Very light primary shade for highlights */
-  --color-bg-dark: #292622; /* Dark background (based on neutral-950) */
+  --color-bg-primary: #fcfbf5;
+  --color-bg-secondary: #f6f3e8;
+  --color-bg-tertiary: #efe8d6;
+  --color-bg-accent: #fbf9eb;
+  --color-bg-dark: #292622;
 
-  /* Border and Divider */
   --color-border-light: var(--color-neutral-200);
   --color-border-medium: var(--color-neutral-300);
   --color-border-dark: var(--color-neutral-400);
 
-  /* Text Colors */
   --color-text-primary: var(--color-neutral-950);
   --color-text-secondary: var(--color-neutral-700);
   --color-text-tertiary: var(--color-neutral-500);

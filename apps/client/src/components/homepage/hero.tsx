@@ -16,7 +16,10 @@ export function Hero() {
   };
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center">
+    <section
+      id="home"
+      className="relative lg:px-38 min-h-screen flex items-center"
+    >
       <div className="absolute inset-0 bg-radial from-primary-200 via-primary-300 to-primary-600 z-0"></div>
 
       <div className=" min-h-screen flex flex-col py-24 text-3xl sm:text-4xl xl:text-5xl px-20 sm:px-32 lg:px-64 items-center justify-evenly text-center gap-10 font-rosarivo text-text-primary font-extrabold relative leading-20 z-10">

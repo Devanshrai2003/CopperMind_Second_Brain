@@ -71,7 +71,7 @@ memoryRouter.get("/get-memories", auth, async (req: Request, res: Response) => {
 
   try {
     const page = Math.max(1, parseInt(req.query.page as string) || 1);
-    const limit = 10;
+    const limit = 8;
     const skip = (page - 1) * limit;
 
     const sortOrder = req.query.sortOrder === "asc" ? "asc" : "desc";
@@ -208,29 +208,48 @@ memoryRouter.delete(
   }
 );
 
-memoryRouter.get(
-  "/get-shared-memories/:userId",
-  async (req: Request, res: Response) => {
-    const { userId } = req.params;
+memoryRouter.get("/shared-memories", async (req: Request, res: Response) => {
+  const memories = await prisma.memory.findMany({
+    where: { shared: true },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      url: true,
+      type: true,
+      tags: true,
+      createdAt: true,
+      user: { select: { username: true } },
+    },
+    orderBy: { createdAt: "desc" },
+  });
 
-    try {
-      const sharedMemories = await prisma.memory.findMany({
-        where: {
-          userId,
-          shared: true,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-      });
+  res.json(memories);
+});
 
-      res.json({ sharedMemories });
-    } catch (error) {
-      console.error("Error fetching shared memories:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  }
-);
+// memoryRouter.get(
+//   "/get-shared-memories/:userId",
+//   async (req: Request, res: Response) => {
+//     const { userId } = req.params;
+
+//     try {
+//       const sharedMemories = await prisma.memory.findMany({
+//         where: {
+//           userId,
+//           shared: true,
+//         },
+//         orderBy: {
+//           createdAt: "desc",
+//         },
+//       });
+
+//       res.json({ sharedMemories });
+//     } catch (error) {
+//       console.error("Error fetching shared memories:", error);
+//       res.status(500).json({ error: "Internal server error" });
+//     }
+//   }
+// );
 
 memoryRouter.patch(
   "/toggle-share/:id",

@@ -1,16 +1,9 @@
 import { InstagramEmbed, XEmbed } from "react-social-media-embed";
 
-import {
-  TrashIcon,
-  PencilIcon,
-  ShareIcon,
-  ChevronDoubleRightIcon,
-  GlobeAsiaAustraliaIcon,
-  LockClosedIcon,
-} from "@heroicons/react/16/solid";
-import { Button } from "../common/button";
+import { ChevronDoubleRightIcon } from "@heroicons/react/16/solid";
 
-interface MemoryCardProps {
+interface SharedMemoryCardProps {
+  user?: { username: string };
   title: string;
   type: "link" | "image" | "note";
   tags: string[];
@@ -18,23 +11,17 @@ interface MemoryCardProps {
   createdAt: string;
   url?: string;
   shared: boolean;
-  onEdit?: () => void;
-  onDelete?: () => void;
-  onShare?: () => void;
 }
 
-export function MemoryCard({
+export function SharedMemoryCard({
+  user,
   title,
   type,
   tags,
   description,
   createdAt,
   url,
-  shared,
-  onEdit,
-  onDelete,
-  onShare,
-}: MemoryCardProps) {
+}: SharedMemoryCardProps) {
   return (
     <div className="w-full max-w-sm mx-auto bg-bg-tertiary rounded-xl shadow-md overflow-hidden border-2 border-border-dark p-4 flex flex-col gap-4 hover:shadow-lg hover:-translate-y-0.5 transition">
       {type === "link" && url ? (
@@ -63,26 +50,6 @@ export function MemoryCard({
         <p className="text-left text-sm sm:text-md text-text-secondary ">
           {createdAt}
         </p>
-        <div className="flex flex-row justify-end items-center gap-2">
-          <Button
-            size="sm"
-            startIcon={<ShareIcon className="size-4 text-primary-950" />}
-            variant="card"
-            onClick={onShare}
-          />
-          <Button
-            size="sm"
-            startIcon={<PencilIcon className="size-4 text-primary-950" />}
-            variant="card"
-            onClick={onEdit}
-          />
-          <Button
-            size="sm"
-            startIcon={<TrashIcon className="size-4 text-primary-950" />}
-            variant="card"
-            onClick={onDelete}
-          />
-        </div>
       </div>
       <div className=" flex flex-wrap gap-2 text-xs">
         {tags.map((tag) => (
@@ -95,11 +62,9 @@ export function MemoryCard({
         ))}
       </div>
       <div className="flex justify-end">
-        {shared ? (
-          <GlobeAsiaAustraliaIcon className="size-4 text-text-secondary" />
-        ) : (
-          <LockClosedIcon className="size-4 text-text-secondary" />
-        )}
+        <p className="text-xs text-text-secondary">
+          Shared by @{user?.username}
+        </p>
       </div>
     </div>
   );
