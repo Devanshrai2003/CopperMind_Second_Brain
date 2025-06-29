@@ -10,7 +10,7 @@ export interface JwtPayload {
 
 export const COOKIE_OPTIONS = {
   httpOnly: true,
-  sameSite: "lax" as const,
+  sameSite: "none" as const,
   secure: process.env.NODE_ENV === "production",
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 };
@@ -47,6 +47,6 @@ export function clearAuthCookie(res: Response): void {
   res.clearCookie("token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "none",
   });
 }
